@@ -49,5 +49,7 @@ spec:
       - name: php-redis
         image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
 
+Note: To edit rs imperativalely use kubectl edit rs rs_name or to scale up and scale down use kubectl scale rs rs_name --replicas=10 
+
 
 
