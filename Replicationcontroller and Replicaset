@@ -1,0 +1,53 @@
+ReplicationController
+Legacy API for managing workloads that can scale horizontally. Superseded by the Deployment and ReplicaSet APIs.
+
+Note : Note:
+A Deployment that configures a ReplicaSet is now the recommended way to set up replication.
+
+apiVersion: v1              # apiversion used for ReplicationController 
+kind: ReplicationController
+metadata:
+  name: nginx               # name of replication controller 
+spec:                       # specs about replication controller 
+  replicas: 3
+  selector:
+    app: nginx
+  template:                # template section belongs to metadata of pod that you are planning to control replicas 
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+
+Note : The only diffrence btw ReplicationController and Replicaset is you are defining labels there to maintain the  adjact number of replicas you want.
+
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
+
+
+
