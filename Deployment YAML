@@ -1,0 +1,25 @@
+Simple deployment YAML   
+
+
+
+apiVersion: apps/v1           
+kind: Deployment
+metadata:                       #INFORMATION ABOUT POD 
+  name: nginx-deployment
+  labels:                       # LABELS ARE REQUIRED 
+    app: nginx
+spec:
+  replicas: 3                   # Number of replicas you want to run thar control by replicaset
+  selector:                     # selector is must for replication rs takes decision based on this i.e the selector should match the labels o pod 
+    matchLabels:
+      app: nginx
+  template:                   # the the adjact template of your application 
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
