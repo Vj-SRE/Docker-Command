@@ -1,0 +1,20 @@
+Simple Pod YAML.
+
+
+
+
+
+apiVersion: v1    # API VERSION 
+kind: Pod         
+metadata:         # Metadata is all about pod information 
+  name: nginx
+  labels:
+   name: nginx
+   tier: front-end
+   team: dev
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
