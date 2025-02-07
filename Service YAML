@@ -1,1 +1,46 @@
+Services type NodePort, ClusterIP, Loadbalencer
+
+
+Nodeport: TargetPort( the actual port used by application)
+          Port: Service port
+          Nodeport: Range 30000-32767
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80               #the listening port of service 
+      targetPort: 9376       # The target port of container 
+
+=================================================================================================
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  namespace: prod
+  labels:
+    run: nginx
+    app: tomcat
+spec:                              # in specs section we can define type and ports 
+  selector:                        # the labels of pods should match the selectors of svc
+    run: nginx
+  type: NodePort
+  ports:
+  - name: tomcat-port
+    port: 30220
+    protocol: TCP
+    nodePort: 30220
+
+===============================================================================================
+
+
+
+
 
