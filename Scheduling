@@ -1,0 +1,16 @@
+
+kubectl replace --force -f pod/deploy.yaml    (forcefully deleting the pod and recreating)
+
+
+==========================================================
+Manual_scheduling_pod.yaml
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:             #if you want to schedule a resource to any specefic node then you can use manually scheduling method in this method we can mention nodeName in specs section
+  containers:
+  - name: nginx
+    image: nginx
+  nodeName: kube-01
