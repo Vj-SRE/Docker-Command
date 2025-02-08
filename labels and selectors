@@ -1,0 +1,37 @@
+Labels and Selectors
+
+Labels are key/value pairs that are attached to objects such as Pods. 
+Labels are intended to be used to specify identifying attributes of objects 
+that are meaningful and relevant to users.
+
+Example labels:
+
+"release" : "stable", "release" : "canary"
+"environment" : "dev", "environment" : "qa", "environment" : "production"
+"tier" : "frontend", "tier" : "backend", "tier" : "cache"
+"partition" : "customerA", "partition" : "customerB"
+"track" : "daily", "track" : "weekly"
+
+
+================================================
+apiVersion: v1    
+kind: Pod
+metadata:
+  name: label-demo
+  labels:                          # we can use labels for sorting out similar things as per requirement. Note we are defining the labels under metadata section.
+    environment: production
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+
+========================================================
+
+Commands kubectl get po --show-labels
+         kubectl get po -l app=nginx,tier=production or kubectl get po --selector app=nginx,tier=production
+         kubectl get pod --all-namespaces -l env=prod,bu=finance,tier=frontend
+
+Note: Kubernets uses labels and selectors internally to connect resources like svc,rs 
