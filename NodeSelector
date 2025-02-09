@@ -1,0 +1,49 @@
+nodeSelector is the simplest recommended form of node selection constraint. 
+You can add the nodeSelector field to your Pod specification and specify the node labels you want the target node to have. 
+Kubernetes only schedules the Pod onto nodes that have each of the labels you specify.
+
+# We are using nodeselctor method here to assign the pod to the specefic nodes as per the container requirement for example we have to deploy a
+pod in our cluster that requres the storage type ssd then in this case we can label the node that have ssd then we can write the yaml accordingly.
+in object configuration file we can define below specefication in specs section.
+
+Prerequirement is labeling the node before it. 
+we can label the node using kubectl label node node_name  lebel_key=label_value  exmple: kubectl label node node01 disktype=ssd
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:                        
+    disktype: ssd
+    Size: large
+
+
+
+Only drawbacks of nodeslector is we can use single labels and selector to acheive a goal here. If you need to place a pod large or medium node the nodeselctor should fail
+in this case thats why we have multiple options like nodeAffinity etc.
+
+
+
+
+==============================================================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  nodeSelector:                        
+    disktype: ssd                     
+
+
+================================================================================================
+
+
+
