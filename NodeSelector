@@ -9,6 +9,9 @@ in object configuration file we can define below specefication in specs section.
 Prerequirement is labeling the node before it. 
 we can label the node using kubectl label node node_name  lebel_key=label_value  exmple: kubectl label node node01 disktype=ssd
 
+
+Pod way to choose the node 
+
 spec:
   containers:
   - name: nginx
