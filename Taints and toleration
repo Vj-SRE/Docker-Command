@@ -1,0 +1,65 @@
+Taints and toleration : 
+
+Note : We are applying taints on pod and toleration to the node but why ? if our requirement is create resources on particular node then we can apply tains on that node 
+according to tains we can apply toleration to the pod to tolerate the taints. 
+
+
+Condition 1 : If we applied taints on any node and we are not defining any type of toleration to any pod then in this case no pod will schedule on the node.
+Condition 2: If taints are applied on the node with the Noschedule tag and pods are alreday running on the node then nothing will happens to the pods but if we change the tag 
+tag to Noexecute then all pods with no toleration will be evicted.
+
+If you want to apply any type of taints on any node the we can use kubectl taint nodes node-name key=value:taint-effect 
+taint:effect ( NoSchedule, PreferNoschedule,NoExecute )
+Example: kubectl taint nodes node01 app=blue:NoSchedule
+
+To removing taints from any node use below command 
+
+kubectl taint nodes node1 key1=value1:NoSchedule-
+
+While applying toleration to the pod we can use below parameters in yaml in specs section
+
+tolerations:
+- key: "key1"                # defined taint on node 
+  operator: "Equal"           
+  value: "value1"            #value defined on node
+  effect: "NoSchedule"       # effect you know already
+
+
+=======================================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+  - key: "example-key"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+
+========================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  tolerations:
+   - key: "app"                              #All the value should be incoded in double quote 
+     operator: "Equal"
+     value: "blue"
+     effect: "NoSchedule"
+
+
