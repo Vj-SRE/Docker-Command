@@ -1,0 +1,41 @@
+NodeAffinity and NodeAntiaffinity provides advance feature to schedule the pod as compare to NodeSelector .
+
+There are two types of nodeAffinity avilable :
+
+1. requiredDuringSchedulingIgnoredDuringExecution: The scheduler can't schedule the Pod unless the rule is met. 
+This functions like nodeSelector, but with a more expressive syntax.
+
+
+2. preferredDuringSchedulingIgnoredDuringExecution: The scheduler tries to find a node that meets the rule. 
+If a matching node is not available, the scheduler still schedules the Pod.
+
+In the preceding types, IgnoredDuringExecution means that if the node labels change after Kubernetes schedules the Pod, the Pod continues to run.
+
+================================================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: with-node-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: topology.kubernetes.io/zone
+            operator: In
+            values:
+            - antarctica-east1
+            - antarctica-west1
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: another-node-label-key
+            operator: In
+            values:
+            - another-node-label-value
+  containers:
+  - name: with-node-affinity
+    image: registry.k8s.io/pause:3.8
