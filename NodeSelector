@@ -24,7 +24,8 @@ spec:
 
 
 Only drawbacks of nodeslector is we can use single labels and selector to acheive a goal here. If you need to place a pod large or medium node the nodeselctor should fail
-in this case thats why we have multiple options like nodeAffinity etc.
+in this case thats why we have multiple options like nodeAffinity etc. We cant write multiple condition using nodeselector 
+method.
 
 
 
