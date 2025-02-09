@@ -1,0 +1,29 @@
+Request and limit
+
+Quality of service 
+Besteffort : If you not mention any request and limits at the container level
+Burstable : Request is smaller than limit
+Guranteed : Request = limit
+
+Note: If you not specify ant request but limit  is specefied the k8s will allot the specefied limit to the pod.
+
+
+
+
+======================================================
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontend
+spec:
+  containers:
+  - name: app
+    image: images.my-company.example/app:v4
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
