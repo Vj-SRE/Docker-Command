@@ -1,0 +1,20 @@
+
+Static Pods are managed directly by the kubelet daemon on a specific node, without the API server observing them. 
+Unlike Pods that are managed by the control plane (for example, a Deployment); 
+instead, the kubelet watches each static Pod (and restarts it if it fails).
+
+Kubelet read the files directly from /etc/kubernetes/manifests 
+
+Kubelet only able to create static pods this way.
+
+You can get the path details while describing kubelet there static pod path was configured or you can view kubeconfig.yaml
+
+You cant view the pods status using kubectl because you dont have the fully configure cluster yet(all componets of master node).
+In this case you have to use crictl, docker command as container tool
+
+The default path for the "kubeletconfig.yaml" file is "/var/lib/kubelet/config.yaml
+
+Note: If you want to deploy any pod as static pod like kube-api, kube-controller,kube-schedula etc the you have to create pod.yaml in k8s manifest path (/etc/kubernetes/manifests )
+or you have to check the static path configured in ( /var/lib/kubelet/config.yaml).
+
+The static pod managed by kubelet. 
