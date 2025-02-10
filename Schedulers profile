@@ -1,0 +1,31 @@
+How scheduler schedule the pods 
+
+1. Schedulingkey : The pods will in queue 
+2. Sorting based on priority defined in pod yaml. To set a priority you must create a priority class using below configuration
+3. After sorting the pods entered in filtering phase in this phase node will filter as per resource requested in pods like memory 1G or Cpu 2 etc
+4. scoring phase : the scheduler will tag the remaining nodes as per score based on Free resources after pod assigned.
+5. Binding : The pod will bound to the node.
+
+===================================================
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 1000000
+globalDefault: false
+description: "This priority class should be used for XYZ service pods only."
+====================================================
+The pod yaml should be like
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    env: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    imagePullPolicy: IfNotPresent
+  priorityClassName: high-priority
+
