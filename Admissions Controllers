@@ -1,0 +1,31 @@
+The thing which we can not define using RBAC will controlled by Admissions Controllers.
+
+like : Only permit image from certain registary
+       dont permit run cainter as a user root
+       only permit certain capability.
+       Metadata always contains labels 
+
+Admission comtrollers : always pull images
+                        Default storage class
+                        Namespaces Exists 
+                        NamespaceAutoProvision
+                        etc
+
+Example: We you trying to create any resources in that name space which doest exists.
+         First will check your authentication and authorization (rbac) and the admission controller comes in the picture the name spaces exist admissons controler will check 
+         the defined ns will exists or not. if not then request is rejected. 
+
+View enabled admisson controlllers
+kube-apiserver -h |grep enable-admission-plugins
+kubectl exec kube-apiserver-controlplane -n kube-system -- kube-apiserver -h | grep enable-admission-plugins
+ps -ef | grep kube-apiserver | grep admission-plugins
+
+
+To add/enable any admissons controller 
+kube-apiserver.service edit the enable admisson plugins and edit the yaml file in /etc/kubernetes/manifests/kuber-apiserver.yaml.
+
+Admisson controllers: 
+1. validating Admisson controllers 
+2. mutating Admisson controllers
+Note: the flow of invocation of admission controllers : First mutating then validating 
+
