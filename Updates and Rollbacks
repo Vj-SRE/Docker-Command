@@ -1,0 +1,43 @@
+To check the status of Rollouts
+kubectl rollout status deployment/deployment_name   (Status)
+kubectl rollout history deployment/deployment_name  (History)
+kubectl rollout undo deployment/deployment_name  ( For rollback to previous version)
+kubectl set image deployment/frontend www=image:v2 ( For changing the image imperatively )
+
+
+Deployment strategy : 
+1. Recreate ( all applications will down first after this the application will reday with newer version. The problem is we cant acheive ZDD( Zero downtime deployment is a method for releasing 
+software or making updates to a system without causing downtime for users)
+
+2. Rolling updates 
+
+Note : Rolling updates is default Deployment strategy. 
+
+================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: nginx-deployment
+ labels:
+   app: nginx
+spec:
+ replicas: 3
+ selector:
+   matchLabels:
+     app: nginx
+ template:
+   metadata:
+     labels:
+       app: nginx
+   spec:
+     containers:
+     - name: nginx
+       image: nginx:1.14.2
+       ports:
+       - containerPort: 80
+ strategy:
+   type: RollingUpdate
+   rollingUpdate:
+     maxUnavailable: 1
+
