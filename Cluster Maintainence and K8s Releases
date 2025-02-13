@@ -1,0 +1,92 @@
+kube-controller-manager --pod-eviction-timeout=5m (Default value)
+kubectl drain node_name  ( Pods are gracefully terminated and recreated on other node )
+kubectl cordon node_name ( It simply marked a node unschedulable unlike drain it doest mark pod terminated or move the node to ready node)
+kubectl uncordon node_name
+
+K8s Releases v1.11.3  ( v1 is major version, 11 Minor, 3 patch )
+
+kube-apiserver ( Primary component) : Non of the other component should be higher than this
+
+Controller-manager and scheduler can be one version lower than kube api and kubelet and kube-proxy may be 2 version lower that kube-api kubectl will be +1 or -1 
+
+======================================================
+Repository have to configure based on os and upgrade requirement :
+Step : 1
+Example if you are palnning to upgrade to Kubernetes version: v1.31 then based on the os we will configure repository first on both nodes (manager and worker).
+
+Ref: https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+sudo apt update
+sudo apt-cache madison kubeadm (To check the avilable packages avilable for kubeadm)
+
+Example: kubeadm | 1.31.5-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+   kubeadm | 1.31.4-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+   kubeadm | 1.31.3-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+   kubeadm | 1.31.2-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+   kubeadm | 1.31.1-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+   kubeadm | 1.31.0-1.1 | https://pkgs.k8s.io/core:/stable:/v1.31/deb  Packages
+
+Step 2: Please use kubectl drain node_name brfore the activity to scheduled the pod on avilable workers nodes.
+
+step 3: for checking latest version available for an upgrade with the current version of the kubeadm tool installed we will use kubeadm upgrade plan
+You can refer below information to get the information about current version and targeted version as per kubeadm
+COMPONENT   NODE           CURRENT   TARGET
+kubelet     controlplane   v1.30.0   v1.30.9
+kubelet     node01         v1.30.0   v1.30.9 
+
+If you want to upgrade to the v1.31.0 then you are not able to do so because as per your kubeadm version you can maximum upgrade to v1.30.9. So you have to upgrade kubeadm
+version as per requrement. how?
+
+sudo apt-mark unhold kubeadm && \
+sudo apt-get update && sudo apt-get install -y kubeadm='1.31.0-1.1' && \
+sudo apt-mark hold kubeadm
+
+To validate the version : kubeadm version. Now kubeadm upgraded succesfully.
+
+Now run sudo kubeadm upgrade plan to check avilable/Suggested plan
+
+step 4 : Now you can upgrade cluster using sudo kubeadm upgrade apply v1.31.0
+
+step : Now all k8s component is updated except: kubelet and kubectl
+Upgrade kubelet and kubectl :
+
+sudo apt-mark unhold kubelet kubectl && \
+sudo apt-get update && sudo apt-get install -y kubelet='1.31.0-1.1' kubectl='1.31.0-1.1' && \
+sudo apt-mark hold kubelet kubectl
+
+Note: We can use the values from sudo apt-cache madison kubeadm command.
+
+systemctl daemon-reload
+systemctl restart kubelet
+
+Now the updated version can be avilable 
+NAME           STATUS                     ROLES           AGE   VERSION
+controlplane   Ready,SchedulingDisabled   control-plane   34m   v1.31.0
+
+Step 5 : you can uncordon the node 
+using kubectl uncordon node_name
+
+==========================================================================
+
+For worker node: 
+
+Step 1: Configure the repos first as above
+step 2: schedule the workloads from the nodes using drain command
+Step 3: update the kubeadm first as per above 
+step 4:  sudo kubeadm upgrade node
+step 5: sudo kubeadm upgrade node
+Note: You will get below lines as output
+[upgrade] Now you should go ahead and upgrade the kubelet package using your package manager.
+step5: upgrade kubelet and kubectl as per above command 
+       systemctl daemon-reload
+       systemctl restart kubelet
+
+step 6: kubectl uncordon node01
+
+
+
+
